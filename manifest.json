@@ -22,7 +22,7 @@
           "js": ["/JS/qrcode.min.js", "/JS/app.js"],
           "css": ["CSS/styleQR.css"],
           "matches": [
-            "file:///C:/User/*",
+            "file:///C:/Users/*",
             "file:///home/*"
           ]
         }

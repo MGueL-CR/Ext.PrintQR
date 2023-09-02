@@ -1,8 +1,8 @@
 
 //  Valida si existe el nodo con el valor de la VOP,
 //  si existe procede a llamar las otras funciones.
-function validarNodo(node) {
-    return node === document.body ? false : document.body.contains(node);
+function validarNodo(pNode) {
+    return pNode === document.body ? false : document.body.contains(pNode);
 }
 
 //  Inserta el caption a la tabla principal donde irá el Código QR.
