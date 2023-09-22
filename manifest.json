@@ -15,7 +15,7 @@
         "48": "/imgs/escan-qr-64.png",
         "128": "/imgs/escan-qr-128.png"
     },
-    "version": "0.1",
+    "version": "2.0",
     "manifest_version": 3,
     "content_scripts": [
         {
