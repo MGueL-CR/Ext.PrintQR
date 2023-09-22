@@ -1,3 +1,15 @@
+//  Valida la existencia del nodo con la clase .title y proceder 
+//  con la creación e inserción del código QR en el navegador.
+if (validarNodo(document.getElementsByClassName('title')[0])) {
+
+    let title= document.getElementsByClassName('title')[0].innerText;
+
+    let nameVPOLot= title.split(":")[1].trim();
+    insertInputs();
+    formatTable();
+    convertToQR(nameVPOLot);
+
+}
 
 //  Valida si existe el nodo con el valor de la VOP,
 //  si existe procede a llamar las otras funciones.
@@ -5,17 +17,12 @@ function validarNodo(pNode) {
     return pNode === document.body ? false : document.body.contains(pNode);
 }
 
-//  Inserta el caption a la tabla principal donde irá el Código QR.
-function insertCaption() {
+//  Da formato a la tabla principal para dar espacio al QR y sus inputs.
+function formatTable() {
 
-    let table= document.getElementsByTagName('table')[0];
-    table.classList.add('principal');
+    document.getElementsByTagName('table')[0].classList.add('principal');
 
-    let divQRCode = document.createElement('caption');
-    divQRCode.textContent= "";
-    divQRCode.className= 'QRCode';
-    divQRCode.id= 'ChartQRCode';
-    table.appendChild(divQRCode);
+    document.getElementsByClassName('title')[0].classList.add('VPOName');
 }
 
 //  Llama a la libreria QRCode para crear el QR con el valor de la VPO/QZ.
@@ -26,27 +33,15 @@ function convertToQR(pText) {
         text: pText,
         width: 64,
         height: 64,
-        colorDark: "#000",
+        colorDark: "#006666",
         colorLight: "#f5f5f5"
     });
-}
-
-//  Valida la existencia del nodo con la clase .title y proceder 
-//  con la creación e inserción del código QR en el navegador.
-if (validarNodo(document.getElementsByClassName('title')[0])) {
-
-    let title= document.getElementsByClassName('title')[0].innerText;
-
-    let nameVPO= title.split(":")[1].trim();
-    insertInputs();
-    insertCaption();
-    convertToQR(nameVPO);
 }
 
 //  Funcion principal para insertar los inputs
 function insertInputs() {
 
-    let thisBody= document.getElementsByTagName('body')[0]; 
+    let QRDiv= createDivs('QRCode', 'ChartQRCode');
 
     let div1= createDivs('field', 'div1');
     div1.appendChild(creatLabel('iTool', 'Tool:'));
@@ -56,11 +51,16 @@ function insertInputs() {
     div2.appendChild(creatLabel('iQty', 'Qty:'));
     div2.appendChild(createInputs('text', 'inputs', 'iQty'));
 
+
     let fields= createDivs('fields', 'fields');
     fields.appendChild(div1);
     fields.appendChild(div2);
 
-    thisBody.appendChild(fields);
+    let banner= createDivs('banner', 'banner');
+    banner.appendChild(QRDiv);
+    banner.appendChild(fields);
+    
+    document.getElementsByTagName('body')[0].appendChild(banner); 
 }
 
 // Funcion que crea un div generico, 
