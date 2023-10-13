@@ -1,14 +1,27 @@
 //  Valida la existencia del nodo con la clase .title y proceder 
 //  con la creación e inserción del código QR en el navegador.
-if (validarNodo(document.getElementsByClassName('title')[0])) {
+try {
+    if (validarNodo(document.getElementsByClassName('title')[0])) {
+        let nameVPOLot= getVPOName();
+        insertInputs();
+        formatTable();
+        convertToQR(nameVPOLot);
+    }
+} catch (e) {
+    console.log(e);
+    alert(e);
+}
 
-    let title= document.getElementsByClassName('title')[0].innerText;
-
-    let nameVPOLot= title.split(":")[1].trim();
-    insertInputs();
-    formatTable();
-    convertToQR(nameVPOLot);
-
+//  Lee el texto de la clase title y lo separa para retornar 
+//  el valor que esta en la posicion 1 (0, 1, 2, ...).
+function getVPOName() {
+    try {        
+        let title= document.getElementsByClassName('title')[0].innerText;    
+        return title.split(":")[1].trim() + '\n';
+    } catch (e) {
+        console.log(e);
+        throw new Error('\nNo es posible obtener el nombre de la VPO.');
+    }
 }
 
 //  Valida si existe el nodo con el valor de la VOP,
@@ -27,18 +40,23 @@ function formatTable() {
 
 //  Llama a la libreria QRCode para crear el QR con el valor de la VPO/QZ.
 function convertToQR(pText) {   
-    const ChartQR = document.getElementById('ChartQRCode');
+    try {
+        const ChartQR = document.getElementById('ChartQRCode');
     
-    new QRCode(ChartQR, {
-        text: pText,
-        width: 64,
-        height: 64,
-        colorDark: "#006666",
-        colorLight: "#f5f5f5"
-    });
+        new QRCode(ChartQR, {
+            text: pText,
+            width: 64,
+            height: 64,
+            colorDark: "#006666",
+            colorLight: "#f5f5f5"
+        });
+    } catch (e) {
+        console.log(e);
+        throw new Error( e.name + '\nNo es posible generar el código QR.')
+    }
 }
 
-//  Funcion principal para insertar los inputs
+//  Funcion principal para insertar los elementos que se mostraran
 function insertInputs() {
 
     let QRDiv= createDivs('QRCode', 'ChartQRCode');
@@ -84,12 +102,13 @@ function creatLabel(pForInput, pValue) {
     return labels;
 }
 
-// Funcion que crea un label generico, 
+// Funcion que crea un input generico, 
 // recibe el tipo de input, el nombre de la clase y id que indique
 function createInputs(pType, pClass, pId) {
     let newInput= document.createElement('input');
     newInput.type= pType;
     newInput.className= pClass;
+    newInput.name= pId;
     newInput.id= pId;
 
     return newInput;
