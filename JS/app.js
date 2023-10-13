@@ -8,6 +8,7 @@ try {
         convertToQR(nameVPOLot);
     }
 } catch (e) {
+    console.log(e);
     alert(e);
 }
 
@@ -107,6 +108,7 @@ function createInputs(pType, pClass, pId) {
     let newInput= document.createElement('input');
     newInput.type= pType;
     newInput.className= pClass;
+    newInput.name= pId;
     newInput.id= pId;
 
     return newInput;

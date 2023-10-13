@@ -1,102 +1,111 @@
-/* * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-} */
-
-body {
-    width: 100vw;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-font{
-    width: 100%;
-    overflow-wrap: break-word;
-    word-break: break-all;
+body {
+  width: 100vw;
+  padding: 0 1em;
+}
+
+font {
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .all {
-    position: relative;
-    display: block;
-    width: 100vw;
+  position: relative;
+  display: block;
+  width: 100%;
 }
 
-.all tbody{
-    width: 100vw;
+.all tbody {
+  width: 100%;
 }
 
 .principal {
-    margin-top: 5rem;
+  margin-top: 5rem;
 }
 
 .VPOName {
-    border-bottom: 1.5px solid #006666 ;
-    margin-bottom: 2px;
+  border-bottom: 1.5px solid #006666;
+  margin-bottom: 2px;
+  padding-left: 0.5rem;
 }
 
 .timecardSubmit2 tbody tr td {
-    overflow-wrap: break-word;
-    word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .banner {
-    position: absolute;
-    top: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.4rem;
+  position: absolute;
+  width: calc(100% - 2em);
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .QRCode {
-    position: relative;
-    display: inline-block;
-    background-color: #f5f5f5;
-    top: 1.75rem;
-    left: 0rem;
-    padding: 6px;
-    border-radius: 0.5rem 0 0 0.5rem;
+  position: relative;
+  display: inline-block;
+  background-color: #fff;
+  top: 1.75rem;
+  left: 0rem;
+  padding: 0px;
+  overflow: hidden;
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.QRCode img {
+  padding: 6px;
+  background: #f5f5f5;
 }
 
 .fields {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background-color: whitesmoke;
-    border-radius: 0 0.5rem 0.5rem 0;
-    top: 1.75rem;
-    left: 0rem;
-    padding: 0.5rem;
-    gap: 0.5rem;    
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: whitesmoke;
+  border-radius: 0 0.5rem 0.5rem 0;
+  top: 1.75rem;
+  left: 0rem;
+  padding: 0.5rem;
+  gap: 0.5rem;
 }
 
 .field {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: left;
+  align-items: center;
 }
 
-.labels{
-    font-size: medium;
-    width: 3rem;
-    text-align: right;
-    margin-right: 0.4rem;
-    font-family: sans-serif;
+.labels {
+  position: absolute;
+  margin-left: 0.5rem;
+  font-size: medium;
+  font-family: sans-serif;
 }
 
 .inputs {
-    line-height: 1.5rem;
-    font-size:large;
-    text-transform: uppercase;
-    text-align: center;
-    border: none;
-    outline: none;
-    width: 10rem;
-    border-left: 2px solid #006666;
-    border-bottom: 2px solid #006666;
-    border-radius: 0 0.3rem;
-    padding: 0 0.3rem;
+  line-height: 1.5rem;
+  font-size: large;
+  text-transform: uppercase;
+  text-align: center;
+  border: none;
+  outline: none;
+  width: 10rem;
+  border-left: 1.5px solid #006666;
+  border-bottom: 1.5px solid #006666;
+  border-radius: 0 0.3rem;
+  padding: 0 0.3rem;
 }
 
-.inputs:hover{
-    border-color: #00FF99;
+.inputs:hover {
+  border-left: 2px solid #00ff99;
+  border-bottom: 2px solid #00ff99;
 }
