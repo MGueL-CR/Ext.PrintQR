@@ -63,5 +63,6 @@ body{
 .library{
     text-align: right;
     font-style: italic;
+    font-size: x-small;
     font-weight: 400;
 }
