@@ -1,16 +1,26 @@
+//  Variable que funcionara como indicador de estado de cambio entre el tipo de código.
+let modeActive = true;
+
+try {
+
 //  Valida la existencia del nodo con la clase .title y proceder 
 //  con la creación e inserción del código QR en el navegador.
-try {
     if (validarNodo(document.getElementsByClassName('title')[0])) {
-        let nameVPOLot= getVPOName();
         insertInputs();
         formatTable();
-        convertToQR(nameVPOLot);
+        setTypeCode();
     }
+
 } catch (e) {
-    console.log(e);
-    alert(e);
+    console.error(e);
+    alert('Error no controlado, favor de validar en consola.\n\nDetalles:\n' + e);
 }
+
+/**
+ * 
+ *  Area para funciones
+ * 
+ */
 
 //  Lee el texto de la clase title y lo separa para retornar 
 //  el valor que esta en la posicion 1 (0, 1, 2, ...).
@@ -22,6 +32,23 @@ function getVPOName() {
         console.log(e);
         throw new Error('\nNo es posible obtener el nombre de la VPO.');
     }
+}
+
+// Funcion que invierte el estado de la variable cada vez que hace clic en el boton
+// Seguido llama al metodo para cambiar el tipo de código
+function changeTypeCode() {
+    modeActive = !modeActive;
+
+    let qrcode = document.getElementById("scanner");
+    qrcode.getElementsByTagName('img')[0].remove();
+    
+    if (validarNodo(qrcode.getElementsByTagName('canvas')[0])) {
+        qrcode.getElementsByTagName('canvas')[0].remove();
+    }
+
+    document.getElementById("btnChangeCode").value = modeActive? 'Tipo QR' : 'Tipo Barra';
+
+    setTypeCode();
 }
 
 //  Valida si existe el nodo con el valor de la VOP,
@@ -38,17 +65,52 @@ function formatTable() {
     document.getElementsByClassName('title')[0].classList.add('VPOName');
 }
 
-//  Llama a la libreria QRCode para crear el QR con el valor de la VPO/QZ.
-function convertToQR(pText) {   
+//  Intercambia el tipo de codigo que se muestra en la pagina.
+function setTypeCode() {
+
+    if (modeActive) {
+        generateBarCode(getVPOName());
+    } else {
+        generateQRCode(getVPOName());
+    }
+}
+
+//  Llama a la libreria JsBarCode para crear el codigo de barra con el valor de la VPO/QZ.
+function generateBarCode(pValor) {
     try {
-        const ChartQR = document.getElementById('ChartQRCode');
+        const newBarCode = document.createElement("img");
+        newBarCode.id = "barcode";
+        document.getElementById("scanner").appendChild(newBarCode);
+
+        JsBarcode("#barcode", pValor.trim(), {
+            format: "CODE39",
+            lineColor: "#006666",
+            background: "#fff",
+            width: 1,
+            height: 55,
+            margin: 3,
+            mod43: false,
+            displayValue: false,
+        });
+    } catch (e) {
+        console.log(e);
+        throw new Error(
+            e.name + "\nNo es posible generar el código de barras."
+        );
+    }
+}
+
+//  Llama a la libreria QRCode para crear el QR con el valor de la VPO/QZ.
+function generateQRCode(pText) {   
+    try {
+        const ChartQR = document.getElementById('scanner');
     
         new QRCode(ChartQR, {
             text: pText,
             width: 64,
             height: 64,
             colorDark: "#006666",
-            colorLight: "#f5f5f5"
+            colorLight: "#fff"
         });
     } catch (e) {
         console.log(e);
@@ -56,10 +118,17 @@ function convertToQR(pText) {
     }
 }
 
+/**
+ * 
+ *  Area de crear elementos HTML
+ * 
+ */
+
 //  Funcion principal para insertar los elementos que se mostraran
 function insertInputs() {
 
-    let QRDiv= createDivs('QRCode', 'ChartQRCode');
+    let header= document.createElement('header');
+    let QRDiv= createDivs('scanner', 'scanner');
 
     let div1= createDivs('field', 'div1');
     div1.appendChild(creatLabel('iTool', 'Tool:'));
@@ -69,6 +138,8 @@ function insertInputs() {
     div2.appendChild(creatLabel('iQty', 'Qty:'));
     div2.appendChild(createInputs('text', 'inputs', 'iQty'));
 
+    let div3= createDivs('field', 'div3');
+    div3.appendChild(createButton('btnChangeCode', 'buttons', 'Tipo QR', 'click', changeTypeCode));
 
     let fields= createDivs('fields', 'fields');
     fields.appendChild(div1);
@@ -77,8 +148,10 @@ function insertInputs() {
     let banner= createDivs('banner', 'banner');
     banner.appendChild(QRDiv);
     banner.appendChild(fields);
+    banner.appendChild(div3);
     
-    document.getElementsByTagName('body')[0].appendChild(banner); 
+    header.appendChild(banner);
+    document.getElementsByTagName("body")[0].appendChild(header);
 }
 
 // Funcion que crea un div generico, 
@@ -112,4 +185,14 @@ function createInputs(pType, pClass, pId) {
     newInput.id= pId;
 
     return newInput;
+}
+
+// Funcion que crea un input tipo botón, recibe el valor, 
+// el nombre de la clase y id, además del evento asociado
+function createButton(pId, pClass, pValue, pEvent, pFuntion) {
+    let newButton = createInputs("button", pClass, pId);
+    newButton.addEventListener(pEvent, pFuntion, true);
+    newButton.value = pValue;
+
+    return newButton;
 }
