@@ -7,8 +7,8 @@ try {
 //  con la creación e inserción del código QR en el navegador.
     if (validarNodo(document.getElementsByClassName('title')[0])) {
         insertInputs();
-        formatTable();
         setTypeCode();
+        formatTable();
     }
 
 } catch (e) {
@@ -27,7 +27,7 @@ try {
 function getVPOName() {
     try {        
         let title= document.getElementsByClassName('title')[0].innerText;    
-        return title.split(":")[1].trim() + '\n';
+        return title.split(":")[1].trim();
     } catch (e) {
         console.log(e);
         throw new Error('\nNo es posible obtener el nombre de la VPO.');
@@ -63,6 +63,33 @@ function formatTable() {
     document.getElementsByTagName('table')[0].classList.add('principal');
 
     document.getElementsByClassName('title')[0].classList.add('VPOName');
+
+    truncTable(document.querySelector("table").childNodes[0]);
+}
+
+// Obtiene la tabla y la acorta a solo las 6 primeras filas del total real,
+// por ultimo, agrega una fila extra en caso que la tabla supere las 5 primeras filas.
+function truncTable(pTable) {
+
+    let indx = [0, 1, 2, 3, 4, 5];
+    let newRows = [];
+    const allChildrens = pTable.children.length;
+
+    for (const iIndex of indx) {
+        newRows.push(pTable.children[iIndex]);
+    }
+
+    document.querySelector('table').innerHTML = "";
+
+    for (const iRow of newRows) {
+        document.querySelector('table').appendChild(iRow);
+    }
+
+    if (allChildrens > 6) {
+        let info= document.createElement('tr');
+        info.innerHTML= '<td class="truncated"><p> ** This table was truncated **</p></td>';
+        document.querySelector('table').appendChild(info);
+    }
 }
 
 //  Intercambia el tipo de codigo que se muestra en la pagina.
@@ -82,7 +109,7 @@ function generateBarCode(pValor) {
         newBarCode.id = "barcode";
         document.getElementById("scanner").appendChild(newBarCode);
 
-        JsBarcode("#barcode", pValor.trim(), {
+        JsBarcode("#barcode", pValor, {
             format: "CODE39",
             lineColor: "#006666",
             background: "#fff",
@@ -136,7 +163,7 @@ function insertInputs() {
 
     let div2= createDivs('field', 'div2');
     div2.appendChild(creatLabel('iQty', 'Qty:'));
-    div2.appendChild(createInputs('text', 'inputs', 'iQty'));
+    div2.appendChild(createInputs('number', 'inputs', 'iQty'));
 
     let div3= createDivs('field', 'div3');
     div3.appendChild(createButton('btnChangeCode', 'buttons', 'Tipo QR', 'click', changeTypeCode));
