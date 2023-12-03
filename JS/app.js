@@ -9,6 +9,8 @@ try {
         insertInputs();
         setTypeCode();
         formatTable();
+        createModal();
+        completeData(getVPOName());
     }
 
 } catch (e) {
@@ -16,10 +18,8 @@ try {
     alert('Error no controlado, favor de validar en consola.\n\nDetalles:\n' + e);
 }
 
-/**
- * 
- *  Area para funciones
- * 
+/*
+ *  Area para funciones  *
  */
 
 //  Lee el texto de la clase title y lo separa para retornar 
@@ -71,19 +71,18 @@ function formatTable() {
 // por ultimo, agrega una fila extra en caso que la tabla supere las 5 primeras filas.
 function truncTable(pTable) {
 
-    let indx = [0, 1, 2, 3, 4, 5];
+    document.querySelector('table').innerHTML = "";
+
     let newRows = [];
     const allChildrens = pTable.children.length;
 
-    for (const iIndex of indx) {
-        newRows.push(pTable.children[iIndex]);
+    for (let indx = 0; indx < 6; indx++) {
+        newRows.push(pTable.children[indx]);
     }
 
-    document.querySelector('table').innerHTML = "";
-
-    for (const iRow of newRows) {
-        document.querySelector('table').appendChild(iRow);
-    }
+    newRows.forEach(eRows => {
+        document.querySelector('table').appendChild(eRows);
+    });
 
     if (allChildrens > 6) {
         let info= document.createElement('tr');
@@ -145,10 +144,95 @@ function generateQRCode(pText) {
     }
 }
 
-/**
- * 
- *  Area de crear elementos HTML
- * 
+function completeData(pName) {
+    let descriptionFull = getDescriptionRaw();
+    let descriptionRaw = getDescriptionRaw();
+
+    let sourceData = getValue("Source", descriptionRaw);
+
+    document.getElementById("txt01").value = pName;
+    document.getElementById("txt02").value = descriptionRaw[0].split(" ").pop();
+    document.getElementById("txt03").value = getTypeVPO();
+    document.getElementById("txt04").value = getQuantity(sourceData);
+    document.getElementById("dscFull").innerText = descriptionFull;
+    getSourceLots(sourceData, "lst01");
+    getSourceLots(sourceData, "lst02");
+}
+
+function getDescriptionRaw() {
+    return document.body
+        .getElementsByClassName("title2")[1]
+        .getElementsByTagName("font")[0]
+        .innerText.split(';')
+}
+
+function getValue(pValor, pDescripcion) {
+    for (let i = 0; i < pDescripcion.length; i++) {
+        if (pDescripcion[i].includes(pValor)) {
+            return pDescripcion[i].trim();
+        }
+    }
+}
+
+function getTypeVPO() {
+    return document.body
+        .getElementsByClassName("title2")[0]
+        .getElementsByTagName("td")[2]
+        .innerText.split(":")[1]
+        .trim();
+}
+
+function getSourceLots(pValue, pId) {
+    let info = "";
+
+    if (pValue.includes("INVENTORY")) {
+        info = importSourceLots(pValue, "|", "(", ",");
+    } else if (pValue.includes("|")) {
+        info = importSourceLots((pValue.slice(pValue.indexOf("|"), pValue.length)), "|", "(", ",");
+    } else {
+        info = importSourceLots(pValue, ":", "(", ","); 
+    }
+    
+    listSLs(info, pId);
+}
+
+function importSourceLots(pValue, pIni, pEnd , pSplit){
+    return pValue
+    .slice(pValue.indexOf(pIni) + 1, pValue.indexOf(pEnd))
+    .split(pSplit);
+}
+
+function listSLs(pItems, pId) {
+    let nuevaLista = document.getElementById(pId);
+
+    for (const i of pItems) {
+        let nuevoItem = document.createElement("li");
+        nuevoItem.innerText = i.trim();
+        nuevaLista.appendChild(nuevoItem);
+    }
+}
+
+function getQuantity(pValor) {
+    if (pValor.includes("|")) {
+        let vValor = pValor
+            .substr(pValor.indexOf("|") + 1, pValor.length)
+            .trim();
+        return vValor
+            .slice(vValor.indexOf("(") + 1, vValor.indexOf(")"))
+            .toString()
+            .replace("Qty", " ")
+            .trim();
+    } else {
+        return pValor
+            .slice(pValor.indexOf("(") + 1, pValor.indexOf(")"))
+            .toString()
+            .replace("Qty", " ")
+            .trim();
+    }
+}
+
+/*
+ *  Area de crear elementos HTML  *
  */
 
 //  Funcion principal para insertar los elementos que se mostraran
@@ -181,45 +265,108 @@ function insertInputs() {
     document.getElementsByTagName("body")[0].appendChild(header);
 }
 
-// Funcion que crea un div generico, 
-// recibe el nombre de la clase y id que indique
-function createDivs(pClass, pId) {
-    let newDiv= document.createElement('div');
-    newDiv.className= pClass;
-    newDiv.id= pId;
+// Funcion que crea la estructura de la ventana / modal.
+function createModal() {
+    // Contenedor y fondo del modal
+    let modal = createDivs("contentModal", "contentModal");
 
-    return newDiv;
+    // Cuadro general para el contenido del modal
+    let ventana = createDivs("ventModal", "ventModal");
+
+    // Titulo y sus elementos del modal
+    let lblTitle = createSpan("information", "lblTitle", "lblTitle");
+    let btnClose = createButton(
+        "closeModal",
+        "closeModal",
+        "X",
+        "click",
+        closeModal
+    );
+
+    // Div que contendra a lblTitle y btnClose
+    let titleModal = createDivs("titleModal", "titleModal");
+    titleModal.appendChild(lblTitle);
+    titleModal.appendChild(btnClose);
+
+    // Creacion de las partes del cuerpo del modal
+
+    // Creacion de las columnas del cuerpo
+    let colIzq = createDivs("infoModal", "checkOut");
+    let colDer = createDivs("infoModal", "checkIn");
+
+    // Creacion y distribucion de los elementos a los grupos y
+    // Distribuir los grupos a las columnas
+    colIzq.appendChild(insertItem(
+        createDivs("fieldModal", "ln01"), 
+        createSpan("Name VPO:", "labelModal", "lbl01"), 
+        createInputs("text", "inputModal", "txt01")));
+
+    colIzq.appendChild(insertItem(
+        createDivs("fieldModal", "ln02"), 
+        createSpan("VPO Type:", "labelModal", "lbl02"), 
+        createInputs("text", "inputModal", "txt02")));
+
+    colIzq.appendChild(insertItem(
+        createDivs("fieldModal", "ln03"), 
+        createSpan("Part Type:", "labelModal", "lbl03"), 
+        createInputs("text", "inputModal", "txt03")));
+
+    colIzq.appendChild(insertItem(
+        createDivs("fieldModal", "ln04"), 
+        createSpan("Sourse Lot(s):", "labelModal", "lbl04"), 
+        createList("ol", "inputModal listModal", "lst01")));
+
+    colIzq.appendChild(insertItem(
+        createDivs("fieldModal", "ln05"), 
+        createSpan("Quantity:", "labelModal", "lbl05"), 
+        createInputs("text", "inputModal", "txt04")));
+
+    colDer.appendChild(insertItem(
+        createDivs("fieldModal", "ln06"), 
+        createSpan("Date:", "labelModal", "lbl06"), 
+        createInputs("text", "inputModal", "txt05")));
+
+    colDer.appendChild(insertItem(
+        createDivs("fieldModal", "ln07"), 
+        createSpan("Name:", "labelModal", "lbl07"), 
+        createInputs("text", "inputModal", "txt06")));
+
+    colDer.appendChild(insertItem(
+        createDivs("fieldModal", "ln08"), 
+        createSpan("Location(s):", "labelModal", "lbl08"), 
+        createList("ol", "inputModal listModal", "lst02")));
+
+    // Pie de pagina
+    let footerModal = createDivs("footerModal", "footerModal");
+    footerModal.appendChild(createSpan("Description:\n", "dscTitle", "dscTitle"));
+    footerModal.appendChild(createSpan("", "dscFull", "dscFull"));
+
+    // Cuerpo y contenido del Modal
+    let bodyModal = createDivs("bodyModal", "bodyModal");
+    bodyModal.appendChild(colIzq);
+    bodyModal.appendChild(colDer);
+    colIzq.appendChild(footerModal);
+
+    // Agregando las secciones en el Modal
+    ventana.appendChild(titleModal);
+    ventana.appendChild(bodyModal);
+    modal.appendChild(ventana);
+
+    // agregando el Modal al cuerpo del HTML
+    document.getElementsByTagName("body")[0].appendChild(modal);
+
 }
 
-// Funcion que crea un label generico, 
-// recibe el valor del texto a mostar y la referncia al input propio
-function creatLabel(pForInput, pValue) {
-    let labels= document.createElement('label');
-    labels.className= 'labels';
-    labels.htmlFor= pForInput;
-    labels.textContent= pValue;
+// Funcion que recibe la etiqueta y el input o lista y 
+// los agrupa al div recibido
+function insertItem(pDivGroup, pLabel, pInput) {
+    pDivGroup.appendChild(pLabel);
+    pDivGroup.appendChild(pInput)
 
-    return labels;
+    return pDivGroup;
 }
 
-// Funcion que crea un input generico, 
-// recibe el tipo de input, el nombre de la clase y id que indique
-function createInputs(pType, pClass, pId) {
-    let newInput= document.createElement('input');
-    newInput.type= pType;
-    newInput.className= pClass;
-    newInput.name= pId;
-    newInput.id= pId;
-
-    return newInput;
-}
-
-// Funcion que crea un input tipo botón, recibe el valor, 
-// el nombre de la clase y id, además del evento asociado
-function createButton(pId, pClass, pValue, pEvent, pFuntion) {
-    let newButton = createInputs("button", pClass, pId);
-    newButton.addEventListener(pEvent, pFuntion, true);
-    newButton.value = pValue;
-
-    return newButton;
+// Funcion que oculta la ventana / modal.
+function closeModal() {
+    document.getElementById("contentModal").style.visibility = "hidden";
 }

@@ -19,7 +19,7 @@
     "manifest_version": 3,
     "content_scripts": [
         {
-          "js": ["/JS/qrcode.min.js", "/JS/JsBarcode.all.min.js", "/JS/app.js"],
+          "js": ["/JS/qrcode.min.js", "/JS/JsBarcode.all.min.js", "/JS/components.js", "/JS/app.js"],
           "css": ["CSS/styleQR.css"],
           "matches": [
             "file:///C:/Users/*",

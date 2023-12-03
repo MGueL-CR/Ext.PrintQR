@@ -189,3 +189,156 @@ header:hover #btnChangeCode{
   border-top: 1.5px dotted #006666;
   border-bottom: 4px double #006666;
 }
+
+/** Estilos de la ventana **/
+
+.contentModal {
+  position: absolute;
+  top: 9rem;
+  width: calc(100vw - 1rem);
+  min-height: 80vh;
+  background-color: rgba(0, 255, 153, 0.25);
+  backdrop-filter: blur(1rem);
+  border-bottom: 1.5px solid #006666;
+  display: grid;
+  place-items: center;
+  padding: 0.6rem 0rem;
+  font-family: sans-serif;
+  font-size: small;
+}
+
+.ventModal {
+  height: 100%;
+  width: calc(100% - 20px);
+  background-color: rgb(245, 245, 245, 1);
+  padding: 0.4rem;
+  border-radius: 0.6rem;
+}
+
+.ventModal:hover {
+  box-shadow: 0 0 6px #006666;
+}
+
+.titleModal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  line-height: 28px;
+  border-bottom: 1.5px solid #006666;
+  padding: 0.15rem 0;
+  padding-left: 0.5rem;
+}
+
+.titleModal:hover .closeModal {
+  display: block;
+}
+
+.closeModal {
+  display: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.6rem;
+  border: 1px solid #006666;
+  background-color: #fff;
+  color: #006666;
+  font-weight: 500;
+}
+
+.closeModal:hover {
+  background-color: #00ff99;
+  box-shadow: 0 0 3px #006666;
+  border-color: #006666;
+  color: #006666;
+  font-weight: 900;
+}
+
+.closeModal:active {
+  background-color: #006666;
+  color: #f5f5f5;
+}
+
+.lblTitle {
+  font-size: large;
+  font-weight: 600;
+  color: #006666;
+}
+
+.bodyModal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.infoModal {
+  display: block;
+  padding: 0 0.5rem;
+}
+
+.fieldModal {
+  background: #dcdcdc;
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  gap: 0.2rem;
+}
+
+.labelModal {
+  position: absolute;
+  font-size: small;
+  font-weight: 600;
+  color: #006666;
+}
+
+.inputModal {
+  border: none;
+  width: 100%;
+  line-height: 1.25rem;
+  text-align: left;
+  outline: none;
+  background: #dcdcdc;
+  border-bottom: 1.5px solid #006666;
+  padding-left: 5.5rem;
+}
+
+.listModal li {
+  margin-left: 3rem;
+  text-align: left;
+}
+
+#ln04,
+#ln08 {
+  align-items: normal;
+}
+
+#lst02 {
+  padding: 0.1rem 0.1rem;
+  list-style: none;
+  font-size: medium;
+  border: none;
+}
+
+#lst02 li {
+  margin-left: 0;
+  margin-top: 1rem;
+  border-bottom: 1.5px solid #006666;
+}
+
+.footerModal {
+  background-color: #dcdcdc;
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+}
+
+.dscTitle {
+  font-size: small;
+  font-weight: 600;
+  color: #006666;
+}
+
+.dscFull {
+  font-size: small;
+  text-align: justify;
+}
